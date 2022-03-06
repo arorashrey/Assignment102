@@ -1,0 +1,101 @@
+1. WAQ to display second highest salary in HR schema.
+
+Answer:  select max(salary) from employees where salary < (select max(salary) from employees);
+
+2. WAQ to display name of employee who is earning maximum in his/her department.
+
+Answer:   select department_id, first_name, salary from employees d where salary = (select max(salary) from employees where department_id = d.department_id);
+
+3. WAQ to display emplyees count who are working from same location.
+
+Answer:   select l.city , count(e.first_name) as employees from employees e, departments d , locations l where e.department_id = d.department_id and d.location_id = l.location_id group by city;
+
+4. WAQ to display number of employees joined year wise.
+
+Answer:   select to_char(hire_date, 'yyyy') as year , count(first_name) as employees from employees group by to_char(hire_date, 'yyyy') order by to_char(hire_date, 'yyyy');
+
+5. WAQ to top 2 earning employee name and salary in each department.
+
+Answer: select first_name, salary from employees order by salary desc limit 2;
+
+
+
+
+With results:-
+
+
+Server [localhost]:
+Database [postgres]:
+Port [5432]:
+Username [postgres]:
+Password for user postgres:
+psql (14.2)
+WARNING: Console code page (437) differs from Windows code page (1252)
+         8-bit characters might not work correctly. See psql reference
+         page "Notes for Windows users" for details.
+Type "help" for help.
+
+postgres=# select max(salary) from employees where salary < (select max(salary) from employees);
+   max
+----------
+ 17000.00
+(1 row)
+
+
+postgres=#  select department_id, first_name, salary from employees d where salary = (select max(salary) from employees where department_id = d.department_id);
+ department_id | first_name |  salary
+---------------+------------+----------
+            90 | Steven     | 24000.00
+            60 | Alexander  |  9000.00
+           100 | Nancy      | 12000.00
+            30 | Den        | 11000.00
+            50 | Adam       |  8200.00
+            80 | John       | 14000.00
+            10 | Jennifer   |  4400.00
+            20 | Michael    | 13000.00
+            40 | Susan      |  6500.00
+            70 | Hermann    | 10000.00
+           110 | Shelley    | 12000.00
+(11 rows)
+
+
+postgres=#  select l.city , count(e.first_name) as employees from employees e, departments d , locations l where e.department_id = d.department_id and d.location_id = l.location_id group by city;
+        city         | employees
+---------------------+-----------
+ Southlake           |         5
+ London              |         1
+ South San Francisco |        45
+ Toronto             |         2
+ Seattle             |        18
+ Oxford              |        34
+ Munich              |         1
+(7 rows)
+
+
+postgres=# select to_char(hire_date, 'yyyy') as year , count(first_name) as employees from employees group by to_char(hire_date, 'yyyy') order by to_char(hire_date, 'yyyy');
+ year | employees
+------+-----------
+ 1987 |         2
+ 1989 |         1
+ 1990 |         1
+ 1991 |         1
+ 1993 |         1
+ 1994 |         7
+ 1995 |         4
+ 1996 |        10
+ 1997 |        28
+ 1998 |        23
+ 1999 |        18
+ 2000 |        11
+(12 rows)
+
+
+postgres=# select first_name, salary from employees order by salary desc limit 2;
+ first_name |  salary
+------------+----------
+ Steven     | 24000.00
+ Neena      | 17000.00
+(2 rows)
+
+
+postgres=#
